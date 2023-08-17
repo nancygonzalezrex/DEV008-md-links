@@ -8,5 +8,23 @@
     "createdAt": "2023-06-28T16:05:09.952Z",
     "version": "6.3.0",
     "commit": "a942adeb868f1fe54b86e34cc4fc4ddb0601700d"
-  }
+  },
+  "description": "## Índice",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nancygonzalezrex/DEV008-md-links.git"
+  },
+  "author": "nancy gonzalez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nancygonzalezrex/DEV008-md-links/issues"
+  },
+  "homepage": "https://github.com/nancygonzalezrex/DEV008-md-links#readme"
 }
