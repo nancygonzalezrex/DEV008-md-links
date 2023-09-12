@@ -1,6 +1,7 @@
 {
   "name": "nancy-gonzalez-md-links",
   "version": "0.1.0",
+  "type": "commonjs",
   "engines": {
     "node": ">=16.x"
   },
@@ -26,5 +27,10 @@
   "bugs": {
     "url": "https://github.com/nancygonzalezrex/DEV008-md-links/issues"
   },
-  "homepage": "https://github.com/nancygonzalezrex/DEV008-md-links#readme"
+  "homepage": "https://github.com/nancygonzalezrex/DEV008-md-links#readme",
+  "dependencies": {
+    "axios": "^1.5.0",
+    "chalk": "^5.3.0",
+    "markdown-link-extractor": "^3.1.0"
+  }
 }
