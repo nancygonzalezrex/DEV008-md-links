@@ -5,10 +5,10 @@ const {
   isFile,
   readThisFile,
 } = require("./function-assistant.js");
-
+// funcion madre md-link que retorna una promesa 
 const mdLinks = (path, option = false) =>
   new Promise((resolve, reject) => {
-    const {validate} = option;
+    const {validate, stats} = option;
     const exist = validateFile(path);
     let conver;
     if (exist) {
@@ -22,7 +22,7 @@ const mdLinks = (path, option = false) =>
       }
       const file = isFile(conver);
       if (file) {
-        const links = readThisFile(conver, validate);
+        const links = readThisFile(conver, validate, stats);
         resolve(links);
       } else {
         console.log("es una carpeta");

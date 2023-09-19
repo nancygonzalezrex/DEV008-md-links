@@ -23,20 +23,42 @@ const isFile = function (ruta) {
   return fs.statSync(ruta).isFile();
 };
 
-function readThisFile(filePath, validate) {
+function readThisFile(filePath, validate, stats) {
   //lectura de archivos
-  const readMd = fs.readFileSync(filePath, { encoding: "utf8" });
-  const { links } = markdownLinkExtractor(readMd);
-  return validarLinks(links, validate);
+  const read = new Promise((resolve, reject) => {
+    fs.readFile(filePath, { encoding: "utf8" }, (err, data) => {
+      if (err) {
+        reject(Error(`Error reading the file: ${path}`));
+      }
+      const regexForText = /\[([^\[]+)\]/g;
+      const arrayWithText = data.match(regexForText);
+      const { links } = markdownLinkExtractor(data, true);
+      const formatearLinks = links.map((link, i) => {
+        return {
+          href: link,
+          text: arrayWithText[i],
+          file: filePath,
+        };
+      });
+      
+      resolve(validarLinks(formatearLinks, links, validate, stats));
+    });
+  });
+  return read;
 }
 
 const getLink = (link, validate) =>
   new Promise((resolve) => {
-    let paramLink;
-    axios(link)
+    let countFail = 0
+    let paramLink = {
+      text: link.text,
+      file: link.file,
+    };
+    axios(link.href)
       .then((response) => {
         paramLink = {
-          href: link,
+          href: link.href,
+          ...paramLink,
         };
         if (validate) {
           paramLink = {
@@ -48,8 +70,10 @@ const getLink = (link, validate) =>
         resolve(paramLink);
       })
       .catch(() => {
+        countFail += 1
         paramLink = {
-          href: link,
+          href: link.href,
+          ...paramLink,
         };
         if (validate) {
           paramLink = {
@@ -62,16 +86,35 @@ const getLink = (link, validate) =>
       });
   });
 
-const validarLinks = (links, validate) =>
+const validarLinks = (formatearLinks, links, validate, stats) =>
   new Promise((resolve) => {
     const newLinks = [];
-    links.forEach((link) => newLinks.push(getLink(link, validate)));
+    formatearLinks.forEach((link) => newLinks.push(getLink(link, validate)));
+    if(stats && !validate) {
+      resolve(validateStats(links));
+    }
     Promise.all(newLinks)
       .then((res) => {
+        const urlBroken = res.filter(iten => iten.status === 404);
+        if(stats && validate){
+          resolve({
+            ...validateStats(links),
+            broken: urlBroken.length
+          })
+        }
         resolve(res);
       })
       .catch((err) => err);
   });
+
+const validateStats = function (links) {
+  const dataArr = new Set(links);
+  let result = [...dataArr];
+  return {
+    total: links.length,
+    unique: result.length,
+  };
+};
 
 module.exports = {
   validateFile,
