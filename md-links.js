@@ -10,25 +10,23 @@ const mdLinks = (path, option = false) =>
   new Promise((resolve, reject) => {
     const {validate, stats} = option;
     const exist = validateFile(path);
-    let conver;
+    let conver = path;
     if (exist) {
       const absolute = isAbsolute(path);
-      if (absolute) {
-        console.log("es abosluta");
-      } else {
-        console.log("no es absoluta");
-        conver = converAbsolute(path);
-        console.log(conver);
+      console.log('Es una ruta absoluta', absolute)
+      if (!absolute) {
+        console.log('Convertir a una ruta absolute')
+        conver = converAbsolute(conver);
       }
       const file = isFile(conver);
       if (file) {
         const links = readThisFile(conver, validate, stats);
         resolve(links);
       } else {
-        console.log("es una carpeta");
+        reject("Es una carpeta");
       }
     } else {
-      console.log("no existe path");
+      reject("No existe ruta");
     }
   });
 

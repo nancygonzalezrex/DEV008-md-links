@@ -1,5 +1,3 @@
-//importo la funcion readFile del modulo fs/promises
-const { readFile } = require("fs/promises");
 const axios = require("axios");
 const fs = require("fs");
 //importacion del mudulo
@@ -24,13 +22,16 @@ const isFile = function (ruta) {
 };
 
 function readThisFile(filePath, validate, stats) {
+  console.log('aqui readThisFile')
   //lectura de archivos
   const read = new Promise((resolve, reject) => {
     fs.readFile(filePath, { encoding: "utf8" }, (err, data) => {
       if (err) {
         reject(Error(`Error reading the file: ${path}`));
       }
+      //expresión regular para buscar y capturar cualquier texto que esté contenido entre corchetes 
       const regexForText = /\[([^\[]+)\]/g;
+      //almacena un array con todas las coincidencias encontradas en data que cumplan con la expresión regular definida en regexForText.
       const arrayWithText = data.match(regexForText);
       const { links } = markdownLinkExtractor(data, true);
       const formatearLinks = links.map((link, i) => {
@@ -50,39 +51,39 @@ function readThisFile(filePath, validate, stats) {
 const getLink = (link, validate) =>
   new Promise((resolve) => {
     let countFail = 0
-    let paramLink = {
+    let paramsLink = {
       text: link.text,
       file: link.file,
     };
     axios(link.href)
       .then((response) => {
-        paramLink = {
+        paramsLink = {
           href: link.href,
-          ...paramLink,
+          ...paramsLink,
         };
         if (validate) {
-          paramLink = {
-            ...paramLink,
+          paramsLink = {
+            ...paramsLink,
             status: response.status,
             ok: "ok",
           };
         }
-        resolve(paramLink);
+        resolve(paramsLink);
       })
       .catch(() => {
         countFail += 1
-        paramLink = {
+        paramsLink = {
           href: link.href,
-          ...paramLink,
+          ...paramsLink,
         };
         if (validate) {
-          paramLink = {
-            ...paramLink,
+          paramsLink = {
+            ...paramsLink,
             status: 404,
             ok: "fail",
           };
         }
-        resolve(paramLink);
+        resolve(paramsLink);
       });
   });
 
