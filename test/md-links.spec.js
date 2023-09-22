@@ -6,7 +6,10 @@ const {
   isFile,
   readThisFile,
 } = require("../function-assistant.js");
+// se realiza un simulacro(imitacion)para las funciones del archivo function-assistant.js 
+//El objeto dentro de jest.mock especifica cómo deben comportarse estas funciones simuladas. 
 jest.mock('../function-assistant.js', () => ({
+  //En este caso, se están simulando las siguientes funciones: 
   readThisFile: jest.fn(),
   validateFile: jest.fn(),
   isAbsolute: jest.fn(),
@@ -15,8 +18,11 @@ jest.mock('../function-assistant.js', () => ({
   readThisFile: jest.fn(),
 }))
 
+// conjunto de Pruebas unitarias para la funcion md-links 
 describe("mdLinks", () => {
+  // it para definir casos de pruebas individuales 
   it("Podria retornar 'no existe ruta' para cuando no se envia ningun valor", () => {
+    // aqui se esta verificando el comportamiento de md-link cuando no se le pasa una ruta vacia 
     validateFile.mockReturnValue(false)
     const path = "";
     mdLinks(path)
@@ -25,6 +31,7 @@ describe("mdLinks", () => {
         expect(error).toBe("No existe ruta");
       });
   });
+  
 
   it("Podria retornar 'Es una carpeta' para cuando no se envia ningun valor", () => {
     validateFile.mockReturnValue(true)

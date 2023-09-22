@@ -16,7 +16,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest --coverage --watch"
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch"
   },
   "repository": {
     "type": "git",
